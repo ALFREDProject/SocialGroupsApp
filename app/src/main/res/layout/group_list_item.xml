@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/item_horizontal_margin"
+    android:layout_marginRight="@dimen/item_horizontal_margin"
+    android:layout_marginTop="@dimen/item_vertical_margin"
+    android:layout_marginBottom="@dimen/item_vertical_margin"
+    card_view:cardCornerRadius= "5dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorCardBg">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Group Name"
+            android:id="@+id/groupNameTextView"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Number of Members: 15"
+            android:id="@+id/groupMembersCountTextView"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/dummy_text"
+            android:id="@+id/groupDescriptionTextView"
+            android:layout_margin="5dp" />
+
+
+    </LinearLayout>
+
+
+</android.support.v7.widget.CardView>

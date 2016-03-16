@@ -6,4 +6,5 @@
     <string name="description">Description</string>
     <string name="add">Add</string>
     <string name="subject_input_error">Subject can\'t be blank!</string>
+    <string name="dummy_text">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et</string>
 </resources>
