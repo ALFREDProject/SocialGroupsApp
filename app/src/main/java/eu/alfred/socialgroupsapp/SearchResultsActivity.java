@@ -52,7 +52,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         searchResultsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent groupDetailsIntent = new Intent(getApplicationContext(), GroupDetailActivity.class);
+                Intent groupDetailsIntent = new Intent(getApplicationContext(), GroupDetailsActivity.class);
                 String groupID = (new ArrayList<String>(searchResults.keySet())).get(position);
                 Log.d("GroupID", groupID);
                 groupDetailsIntent.putExtra("GroupID", groupID);
