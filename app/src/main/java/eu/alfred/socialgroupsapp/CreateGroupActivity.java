@@ -32,7 +32,6 @@ import eu.alfred.socialgroupsapp.model.Group;
 
 public class CreateGroupActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private Button createGroupButton;
     private EditText subjectEditText, descriptionEditText;
     private RequestQueue requestQueue;
@@ -45,10 +44,6 @@ public class CreateGroupActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_group);
 
         requestQueue = Volley.newRequestQueue(this);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Create a new group!");
 
         subjectEditText = (EditText) findViewById(R.id.subjectEditText);
         descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
@@ -91,19 +86,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             }
 
             @Override
-            public byte[] getBody() throws AuthFailureError {
-                return json.getBytes();
-            }
-
-            /**
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("userID", userID);
-                params.put("name", subject);
-                params.put("description", description);
-                return params;
-            } **/
+            public byte[] getBody() throws AuthFailureError { return json.getBytes(); }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
@@ -117,14 +100,4 @@ public class CreateGroupActivity extends AppCompatActivity {
 
         requestQueue.add(request);
     }
-
-
-
-
-    /**
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        return super.onCreateOptionsMenu(menu);
-    } **/
 }

@@ -2,12 +2,13 @@ package eu.alfred.socialgroupsapp;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,8 +34,8 @@ import eu.alfred.socialgroupsapp.model.Group;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
     private FloatingActionButton fab;
+    private SearchView searchView;
     private RequestQueue requestQueue;
     private List<Group> myGroups = new ArrayList<Group>();
     private RecyclerView groupsRecyclerview;
@@ -44,10 +45,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("ALFRED Groups");
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -61,36 +58,51 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(createGroupIntent);
             }
         });
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        return true;
-    }
+        final MenuItem searchItem = menu.findItem(R.id.toolbar_search);
 
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                searchItem.collapseActionView();
+                Intent searchQueryIntent = new Intent(getApplicationContext(), SearchResultsActivity.class);
+                searchQueryIntent.putExtra("Query", query);
+                Log.d("Search: ", query);
+                startActivity(searchQueryIntent);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
+    }
+/**
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        String msg = "";
-
         switch (item.getItemId()) {
             case R.id.toolbar_search:
-                msg = "Search";
+                //handleMenuSearch();
                 break;
             case R.id.toolbar_add:
                 Intent createGroupIntent = new Intent(this, CreateGroupActivity.class);
                 startActivity(createGroupIntent);
                 break;
-            default:
-                break;
         }
-
-        Toast.makeText(this, msg + " clicked!", Toast.LENGTH_SHORT).show();
 
         return super.onOptionsItemSelected(item);
     }
+**/
 
     public void getMyGroups() {
 
@@ -104,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("Group added: ", group.toString());
                     }
 
-                    //Log.d("groups", myGroups.toString());
                     groupsRecyclerview = (RecyclerView) findViewById(R.id.groupsRecyclerView);
                     RecyclerAdapter adapter = new RecyclerAdapter(getApplicationContext(), myGroups);
                     groupsRecyclerview.setAdapter(adapter);

@@ -5,11 +5,12 @@
     <item android:id="@+id/toolbar_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
 
-    <item android:id="@+id/toolbar_add"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/add"
-        app:showAsAction="always" />
+    <item android:id="@+id/toolbar_refresh"
+        android:icon="@android:drawable/ic_menu_rotate"
+        app:showAsAction="ifRoom"
+        android:title="@string/refresh" />
 
 </menu>

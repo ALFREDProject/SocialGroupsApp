@@ -5,10 +5,6 @@
     android:layout_height="match_parent"
     tools:context="eu.alfred.socialgroupsapp.CreateGroupActivity">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"

@@ -28,6 +28,16 @@ public class Group implements Serializable {
         this.memberIds = new String[]{userID} ;
     }
 
+    public Group(String name, String description, String[] memberIds, long creationDate) {
+        this.name = name;
+        this.description = description;
+        this.memberIds = memberIds;
+        Date date = new Date();
+        date.setTime((long)creationDate*1000);
+    }
+
+
+
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 

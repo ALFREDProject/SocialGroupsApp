@@ -6,7 +6,8 @@
     android:layout_marginRight="@dimen/item_horizontal_margin"
     android:layout_marginTop="@dimen/item_vertical_margin"
     android:layout_marginBottom="@dimen/item_vertical_margin"
-    card_view:cardCornerRadius= "5dp" >
+    card_view:cardCornerRadius= "5dp"
+    android:id="@+id/groupCardView" >
 
     <LinearLayout
         android:layout_width="match_parent"
