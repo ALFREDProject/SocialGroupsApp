@@ -1,5 +1,6 @@
 package eu.alfred.socialgroupsapp;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     private Button createGroupButton;
     private EditText subjectEditText, descriptionEditText;
     private RequestQueue requestQueue;
-    private String alfredUserId = "56e6ad24e4b0fadc1367b665";
+    private String alfredUserId = "56e6ad24e4b0fadc1367b667";
     private String reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/groups/new";
 
     @Override
@@ -71,6 +72,8 @@ public class CreateGroupActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 VolleyLog.v("Response:%n %s", response);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
             }
         }, new Response.ErrorListener() {
             @Override

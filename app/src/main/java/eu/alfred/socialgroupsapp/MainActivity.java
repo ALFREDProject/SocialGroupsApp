@@ -1,5 +1,6 @@
 package eu.alfred.socialgroupsapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
@@ -27,7 +28,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.alfred.socialgroupsapp.adapter.RecyclerAdapter;
 import eu.alfred.socialgroupsapp.model.Group;
@@ -37,9 +42,18 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton fab;
     private SearchView searchView;
     private RequestQueue requestQueue;
-    private List<Group> myGroups = new ArrayList<Group>();
+    private LinkedHashMap<String, Group> myGroups = new LinkedHashMap<String, Group>();
+    //private List<Group> myGroups = new ArrayList<Group>();
+    private Context context = this;
     private RecyclerView groupsRecyclerview;
-    private String reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56e6ad24e4b0fadc1367b665/groups";
+    private MenuItem searchItem;
+    private String reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56e6ad24e4b0fadc1367b667/membergroups";
+
+    /**
+     * Test User-IDs
+     * 56e6ad24e4b0fadc1367b667 : deniz
+     * 56e6ad24e4b0fadc1367b665 : sven
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        final MenuItem searchItem = menu.findItem(R.id.toolbar_search);
-
+        searchItem = menu.findItem(R.id.toolbar_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -86,23 +99,18 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-/**
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
-            case R.id.toolbar_search:
-                //handleMenuSearch();
-                break;
-            case R.id.toolbar_add:
-                Intent createGroupIntent = new Intent(this, CreateGroupActivity.class);
-                startActivity(createGroupIntent);
-                break;
+            case R.id.toolbar_refresh:
+                myGroups.clear();
+                getMyGroups();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
-**/
 
     public void getMyGroups() {
 
@@ -112,12 +120,20 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject group = response.getJSONObject(i);
-                        myGroups.add(new Group(group.getString("description"), group.getString("name"), group.getString("userID")));
+
+                        JSONArray memberIdsJson = group.getJSONArray("memberIds");
+                        String[] memberIds = new String[memberIdsJson.length()];
+                        for (int k = 0; k < memberIdsJson.length(); k++) {
+                            memberIds[k] = memberIdsJson.getString(k);
+                        }
+
+                        myGroups.put(group.getString("id"), new Group(group.getString("description"), group.getString("name"),
+                                group.getString("userID"), memberIds, group.getString("creationDate"), group.getString("lastUpdated")));
                         Log.d("Group added: ", group.toString());
                     }
 
                     groupsRecyclerview = (RecyclerView) findViewById(R.id.groupsRecyclerView);
-                    RecyclerAdapter adapter = new RecyclerAdapter(getApplicationContext(), myGroups);
+                    RecyclerAdapter adapter = new RecyclerAdapter(context, myGroups);
                     groupsRecyclerview.setAdapter(adapter);
 
                     LinearLayoutManager mLinearLayoutManagerVertical = new LinearLayoutManager(getApplicationContext());

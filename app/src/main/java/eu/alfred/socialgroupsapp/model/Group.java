@@ -28,6 +28,15 @@ public class Group implements Serializable {
         this.memberIds = new String[]{userID} ;
     }
 
+    public Group(String description, String name, String userID, String[] memberIds, String creationDate, String lastUpdated) {
+        this.description = description;
+        this.name = name;
+        this.userID = userID;
+        this.memberIds = memberIds;
+        this.creationDate = creationDate;
+        this.lastUpdated = lastUpdated;
+    }
+
     public Group(String name, String description, String[] memberIds, long creationDate) {
         this.name = name;
         this.description = description;
@@ -35,7 +44,6 @@ public class Group implements Serializable {
         Date date = new Date();
         date.setTime((long)creationDate*1000);
     }
-
 
 
     public String getDescription() { return description; }

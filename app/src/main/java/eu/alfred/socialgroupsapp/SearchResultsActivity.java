@@ -65,6 +65,7 @@ public class SearchResultsActivity extends AppCompatActivity {
             Log.d("Query Intent Received", query);
             getSearchResults(query);
         }
+
     }
 
     public void getSearchResults(String query){
