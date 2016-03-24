@@ -1,6 +1,8 @@
 package eu.alfred.socialgroupsapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,14 +19,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +33,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     private Button createGroupButton;
     private EditText subjectEditText, descriptionEditText;
     private RequestQueue requestQueue;
-    private String alfredUserId = "56e6ad24e4b0fadc1367b667";
+    private String userId;
     private String reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/groups/new";
 
     @Override
@@ -44,6 +41,8 @@ public class CreateGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_group);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        userId = preferences.getString("id", "");
         requestQueue = Volley.newRequestQueue(this);
 
         subjectEditText = (EditText) findViewById(R.id.subjectEditText);
@@ -54,7 +53,7 @@ public class CreateGroupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (subjectEditText.getText().toString().isEmpty()) { subjectEditText.setError(getResources().getString(R.string.subject_input_error)); }
-                else { createNewGroup(alfredUserId, subjectEditText.getText().toString(), descriptionEditText.getText().toString()); }
+                else { createNewGroup(userId, subjectEditText.getText().toString(), descriptionEditText.getText().toString()); }
             }
         });
     }

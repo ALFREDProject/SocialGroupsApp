@@ -3,6 +3,8 @@ package eu.alfred.socialgroupsapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,8 +32,8 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private TextView sizeOfGroupTextView, groupDescriptionTextView;
     private Button joinOrLeaveButton;
     private RequestQueue requestQueue;
-    private String reqURL, groupID;
-    private String userId = "56e6ad24e4b0fadc1367b667";
+    private String reqURL, groupID, userId;
+    //private String userId = "56e6ad24e4b0fadc1367b667";
     private boolean isAMember, isAnOwner = false;
     final Context context = this;
 
@@ -39,6 +41,9 @@ public class GroupDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_details);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        userId = preferences.getString("id", "");
 
         requestQueue = Volley.newRequestQueue(this);
         sizeOfGroupTextView = (TextView) findViewById(R.id.sizeOfGroupTextView);

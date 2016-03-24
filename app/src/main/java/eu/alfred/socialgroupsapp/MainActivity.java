@@ -2,6 +2,8 @@ package eu.alfred.socialgroupsapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -43,11 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private SearchView searchView;
     private RequestQueue requestQueue;
     private LinkedHashMap<String, Group> myGroups = new LinkedHashMap<String, Group>();
-    //private List<Group> myGroups = new ArrayList<Group>();
     private Context context = this;
     private RecyclerView groupsRecyclerview;
     private MenuItem searchItem;
-    private String reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/56e6ad24e4b0fadc1367b667/membergroups";
+    private String userId, reqURL;
 
     /**
      * Test User-IDs
@@ -60,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //userId = getIntent().getStringExtra("User");
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        userId = preferences.getString("id", "");
+        Log.d("id", userId);
+
         requestQueue = Volley.newRequestQueue(this);
 
         getMyGroups();
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent createGroupIntent = new Intent(getApplicationContext(), CreateGroupActivity.class);
+                //createGroupIntent.putExtra("User", userId);
                 startActivity(createGroupIntent);
             }
         });
@@ -113,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getMyGroups() {
+
+        reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/" + userId + "/membergroups";
 
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, reqURL, null, new Response.Listener<JSONArray>() {
             @Override
