@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Social Groups App</string>
+    <string name="app_name">ALFRED Groups</string>
     <string name="search">Search</string>
     <string name="create_group">Create Group</string>
     <string name="subject">Subject</string>

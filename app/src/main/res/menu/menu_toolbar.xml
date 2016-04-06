@@ -13,4 +13,7 @@
         app:showAsAction="ifRoom"
         android:title="@string/refresh" />
 
+    <item android:id="@+id/toolbar_logout"
+        android:title="Logout" />
+
 </menu>

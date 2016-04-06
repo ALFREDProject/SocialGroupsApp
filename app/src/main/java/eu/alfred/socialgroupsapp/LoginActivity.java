@@ -32,14 +32,21 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    //private TextView result;
+    private SharedPreferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //result = (TextView) findViewById(R.id.result);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if(preferences.contains("id")) {
+            Intent goToMainIntent = new Intent(getApplicationContext(), MainActivity.class);
+            //goToMainIntent.putExtra("User", authenticatedUser.getUserId());
+            startActivity(goToMainIntent);
+            finish();
+        }
+
         mEmailView = (EditText) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -100,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
                     //result.setText(authenticatedUser.toString());
                     Log.d("AuthenticatedUser", authenticatedUser.toString());
 
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("id", authenticatedUser.getUserId());
                     editor.putString("token", authenticatedUser.getAccessToken());

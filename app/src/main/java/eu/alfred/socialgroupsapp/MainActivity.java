@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView groupsRecyclerview;
     private MenuItem searchItem;
     private String userId, reqURL;
+    private SharedPreferences preferences;
 
     /**
      * Test User-IDs
@@ -61,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //userId = getIntent().getStringExtra("User");
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userId = preferences.getString("id", "");
         Log.d("id", userId);
 
@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent createGroupIntent = new Intent(getApplicationContext(), CreateGroupActivity.class);
-                //createGroupIntent.putExtra("User", userId);
                 startActivity(createGroupIntent);
             }
         });
@@ -113,6 +112,14 @@ public class MainActivity extends AppCompatActivity {
             case R.id.toolbar_refresh:
                 myGroups.clear();
                 getMyGroups();
+                return true;
+            case R.id.toolbar_logout:
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.clear();
+                editor.commit();
+                Intent goToLoginIntent = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(goToLoginIntent);
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
