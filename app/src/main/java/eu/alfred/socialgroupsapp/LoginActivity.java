@@ -27,11 +27,8 @@ import eu.alfred.internal.wrapper.authentication.login.LoginDataException;
 
 public class LoginActivity extends AppCompatActivity {
 
-    // UI references.
-    private EditText mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    private EditText mEmailView, mPasswordView;
+    private View mProgressView, mLoginFormView;
     private SharedPreferences preferences;
 
     @Override
