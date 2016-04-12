@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,19 +28,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
+import eu.alfred.api.proxies.interfaces.ICadeCommand;
 import eu.alfred.socialgroupsapp.adapter.RecyclerAdapter;
 import eu.alfred.socialgroupsapp.model.Group;
+import eu.alfred.ui.AppActivity;
+import eu.alfred.ui.CircleButton;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppActivity implements ICadeCommand {
 
-    private FloatingActionButton fab;
     private SearchView searchView;
     private RequestQueue requestQueue;
     private LinkedHashMap<String, Group> myGroups = new LinkedHashMap<String, Group>();
@@ -51,33 +48,21 @@ public class MainActivity extends AppCompatActivity {
     private String userId, reqURL;
     private SharedPreferences preferences;
 
-    /**
-     * Test User-IDs
-     * 56e6ad24e4b0fadc1367b667 : deniz
-     * 56e6ad24e4b0fadc1367b665 : sven
-     */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userId = preferences.getString("id", "");
-        Log.d("id", userId);
 
         requestQueue = Volley.newRequestQueue(this);
-
         getMyGroups();
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent createGroupIntent = new Intent(getApplicationContext(), CreateGroupActivity.class);
-                startActivity(createGroupIntent);
-            }
-        });
+        circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
+        circleButton.setOnTouchListener(new CircleTouchListener());
+
     }
 
     @Override
@@ -112,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.toolbar_refresh:
                 myGroups.clear();
                 getMyGroups();
+                return true;
+            case R.id.toolbar_create:
+                Intent createGroupIntent = new Intent(this, CreateGroupActivity.class);
+                startActivity(createGroupIntent);
                 return true;
             case R.id.toolbar_logout:
                 SharedPreferences.Editor editor = preferences.edit();
@@ -173,5 +162,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void performAction(String s, Map<String, String> map) {
+
+    }
+
+    @Override
+    public void performWhQuery(String s, Map<String, String> map) {
+
+    }
+
+    @Override
+    public void performValidity(String s, Map<String, String> map) {
+
+    }
+
+    @Override
+    public void performEntityRecognizer(String s, Map<String, String> map) {
+
+    }
 }
 

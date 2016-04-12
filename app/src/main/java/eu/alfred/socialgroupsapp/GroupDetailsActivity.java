@@ -33,7 +33,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private Button joinOrLeaveButton;
     private RequestQueue requestQueue;
     private String reqURL, groupID, userId;
-    //private String userId = "56e6ad24e4b0fadc1367b667";
     private boolean isAMember, isAnOwner = false;
     final Context context = this;
 
