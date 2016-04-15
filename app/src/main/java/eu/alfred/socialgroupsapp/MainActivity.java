@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
+import eu.alfred.api.speech.Cade;
 import eu.alfred.socialgroupsapp.adapter.RecyclerAdapter;
 import eu.alfred.socialgroupsapp.model.Group;
 import eu.alfred.ui.AppActivity;
@@ -47,6 +48,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private MenuItem searchItem;
     private String userId, reqURL;
     private SharedPreferences preferences;
+    Cade cade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +166,8 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
     @Override
     public void performAction(String s, Map<String, String> map) {
-
+        Log.d("DDD Response:", map.toString());
+        cade.sendActionResult(true);
     }
 
     @Override
