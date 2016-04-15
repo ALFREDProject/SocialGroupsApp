@@ -163,6 +163,10 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         requestQueue.add(request);
     }
 
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
 
     @Override
     public void performAction(String s, Map<String, String> map) {
