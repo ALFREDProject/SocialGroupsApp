@@ -50,6 +50,8 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private SharedPreferences preferences;
     Cade cade;
 
+    final static String CREATE_SOCIAL_GROUP = "CreateSocialGroup";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -170,13 +172,23 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
     @Override
     public void performAction(String s, Map<String, String> map) {
-        Log.d("DDD Response:", map.toString());
+        Log.d("Perform Action", "works!");
+        Log.d("Perform Action string", s);
+        switch (s) {
+            case CREATE_SOCIAL_GROUP:
+                Log.d("DDD Response", map.toString());
+                break;
+            default:
+                break;
+        }
+
         cade.sendActionResult(true);
     }
 
     @Override
     public void performWhQuery(String s, Map<String, String> map) {
-
+        Log.d("Wh Query", s);
+        cade.sendActionResult(true);
     }
 
     @Override
