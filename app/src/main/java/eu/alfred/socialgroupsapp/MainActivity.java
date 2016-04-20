@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +13,6 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -48,14 +45,14 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private MenuItem searchItem;
     private String userId, reqURL;
     private SharedPreferences preferences;
-    Cade cade;
 
-    final static String CREATE_SOCIAL_GROUP = "CreateSocialGroup";
+    final static String CREATE_SOCIAL_GROUP = "CreateSocialGroupAction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -193,12 +190,12 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
     @Override
     public void performValidity(String s, Map<String, String> map) {
-
+        Log.d("Perform Validity", "works!");
     }
 
     @Override
     public void performEntityRecognizer(String s, Map<String, String> map) {
-
+        Log.d("Perform Entity Recog", "works!");
     }
 }
 
