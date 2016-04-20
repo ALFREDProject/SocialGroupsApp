@@ -171,11 +171,19 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
     @Override
     public void performAction(String s, Map<String, String> map) {
-        Log.d("Perform Action", "works!");
         Log.d("Perform Action string", s);
         switch (s) {
             case CREATE_SOCIAL_GROUP:
+                Intent alfredGroupIntent = new Intent(this, CreateGroupActivity.class);
+                String groupName = (String) map.get("selected_groupname");
+                alfredGroupIntent.putExtra("GroupName", groupName);
+                if(map.containsKey("selected_groupdescription")) {
+                    String groupDescription = (String) map.get("selected_groupdescription");
+                    alfredGroupIntent.putExtra("GroupDescription", groupDescription);
+                }
                 Log.d("DDD Response", map.toString());
+                Log.d("DDD Response 2", groupName);
+                startActivity(alfredGroupIntent);
                 break;
             default:
                 break;

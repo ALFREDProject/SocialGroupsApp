@@ -50,6 +50,10 @@ public class CreateGroupActivity extends FragmentActivity {
         descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         createGroupButton = (Button) findViewById(R.id.createGroupButton);
 
+        Bundle extras = getIntent().getExtras();
+        if(extras == null) { return; }
+        if(extras != null) { subjectEditText.setText(extras.getString("GroupName")); descriptionEditText.setText(extras.getString("GroupDescription")); }
+
         createGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
