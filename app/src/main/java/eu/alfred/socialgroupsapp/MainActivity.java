@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-//import android.support.v7.widget.SearchView;
 import android.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
@@ -44,7 +43,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private Context context = this;
     private RecyclerView groupsRecyclerview;
     private MenuItem searchItem;
-    private String userId, reqURL;
+    private String loggedUserId, userId, reqURL;
     private SharedPreferences preferences;
 
     final static String CREATE_SOCIAL_GROUP = "CreateSocialGroupAction";
@@ -55,7 +54,11 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         setContentView(R.layout.activity_main);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        userId = preferences.getString("id", "");
+        loggedUserId = preferences.getString("id", "");
+        if(loggedUserId.isEmpty()){
+            userId = "56e6c782e1079f764b596c87";
+        }
+        else { userId = loggedUserId; }
 
         requestQueue = Volley.newRequestQueue(this);
         getMyGroups();

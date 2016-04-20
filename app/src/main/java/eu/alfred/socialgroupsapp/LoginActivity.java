@@ -98,11 +98,9 @@ public class LoginActivity extends FragmentActivity {
                 try {
                     AuthenticationServerWrapper authWrapper = new AuthenticationServerWrapper();
                     AuthenticatedUser authenticatedUser = authWrapper.login(loginBuilder.create());
-                    //result.setText(authenticatedUser.toString());
-                    Log.d("AuthenticatedUser", authenticatedUser.toString());
-
                     SharedPreferences.Editor editor = preferences.edit();
                     editor.putString("id", authenticatedUser.getUserId());
+                    Log.d("User Id", authenticatedUser.getUserId());
                     editor.putString("token", authenticatedUser.getAccessToken());
                     editor.commit();
 
