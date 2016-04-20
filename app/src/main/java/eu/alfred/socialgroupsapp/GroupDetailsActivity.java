@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
-public class GroupDetailsActivity extends AppCompatActivity {
+public class GroupDetailsActivity extends FragmentActivity {
 
     private TextView sizeOfGroupTextView, groupDescriptionTextView;
     private Button joinOrLeaveButton;

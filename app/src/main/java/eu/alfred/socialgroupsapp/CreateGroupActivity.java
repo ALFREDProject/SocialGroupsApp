@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +29,7 @@ import java.util.Map;
 
 import eu.alfred.socialgroupsapp.model.Group;
 
-public class CreateGroupActivity extends AppCompatActivity {
+public class CreateGroupActivity extends FragmentActivity {
 
     private Button createGroupButton;
     private EditText subjectEditText, descriptionEditText;
@@ -73,6 +74,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                 VolleyLog.v("Response:%n %s", response);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override

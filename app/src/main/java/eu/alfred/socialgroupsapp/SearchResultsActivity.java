@@ -1,6 +1,7 @@
 package eu.alfred.socialgroupsapp;
 
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 import eu.alfred.socialgroupsapp.model.Group;
 
-public class SearchResultsActivity extends AppCompatActivity {
+public class SearchResultsActivity extends FragmentActivity {
 
     private ListView searchResultsListView;
     private Map<String, String> searchResults = new LinkedHashMap<String, String>();
