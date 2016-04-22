@@ -4,18 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import android.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
+import eu.alfred.api.speech.Cade;
 import eu.alfred.socialgroupsapp.adapter.RecyclerAdapter;
 import eu.alfred.socialgroupsapp.model.Group;
 import eu.alfred.ui.AppActivity;
@@ -45,17 +43,22 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private Context context = this;
     private RecyclerView groupsRecyclerview;
     private MenuItem searchItem;
-    private String userId, reqURL;
+    private String loggedUserId, userId, reqURL;
     private SharedPreferences preferences;
+
+    final static String CREATE_SOCIAL_GROUP = "CreateSocialGroupAction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        userId = preferences.getString("id", "");
+        loggedUserId = preferences.getString("id", "");
+        if(loggedUserId.isEmpty()){
+            userId = "56e6c782e1079f764b596c87";
+        }
+        else { userId = loggedUserId; }
 
         requestQueue = Volley.newRequestQueue(this);
         getMyGroups();
@@ -161,25 +164,48 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         requestQueue.add(request);
     }
 
+    @Override
+    public void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+    }
 
     @Override
     public void performAction(String s, Map<String, String> map) {
+        Log.d("Perform Action string", s);
+        switch (s) {
+            case CREATE_SOCIAL_GROUP:
+                Intent alfredGroupIntent = new Intent(this, CreateGroupActivity.class);
+                String groupName = (String) map.get("selected_groupname");
+                alfredGroupIntent.putExtra("GroupName", groupName);
+                if(map.containsKey("selected_groupdescription")) {
+                    String groupDescription = (String) map.get("selected_groupdescription");
+                    alfredGroupIntent.putExtra("GroupDescription", groupDescription);
+                }
+                Log.d("DDD Response", map.toString());
+                Log.d("DDD Response 2", groupName);
+                startActivity(alfredGroupIntent);
+                break;
+            default:
+                break;
+        }
 
+        cade.sendActionResult(true);
     }
 
     @Override
     public void performWhQuery(String s, Map<String, String> map) {
-
+        Log.d("Wh Query", s);
+        cade.sendActionResult(true);
     }
 
     @Override
     public void performValidity(String s, Map<String, String> map) {
-
+        Log.d("Perform Validity", "works!");
     }
 
     @Override
     public void performEntityRecognizer(String s, Map<String, String> map) {
-
+        Log.d("Perform Entity Recog", "works!");
     }
 }
 

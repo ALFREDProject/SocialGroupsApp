@@ -5,8 +5,8 @@
     <item android:id="@+id/toolbar_search"
         android:icon="@android:drawable/ic_menu_search"
         android:title="@string/search"
-        app:showAsAction="collapseActionView|ifRoom"
-        app:actionViewClass="android.support.v7.widget.SearchView" />
+        android:showAsAction="collapseActionView|always"
+        android:actionViewClass="android.widget.SearchView" />
 
     <item android:id="@+id/toolbar_refresh"
         android:icon="@android:drawable/ic_menu_rotate"
