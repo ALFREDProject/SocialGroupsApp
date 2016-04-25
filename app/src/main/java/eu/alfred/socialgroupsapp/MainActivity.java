@@ -47,6 +47,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private SharedPreferences preferences;
 
     final static String CREATE_SOCIAL_GROUP = "CreateSocialGroupAction";
+    final static String SEARCH_SOCIAL_GROUP = "SearchSocialGroupAction";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +56,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         loggedUserId = preferences.getString("id", "");
-        if(loggedUserId.isEmpty()){
-            userId = "56e6c782e1079f764b596c87";
-        }
+        if(loggedUserId.isEmpty()){ userId = "56e6c782e1079f764b596c87"; }
         else { userId = loggedUserId; }
 
         requestQueue = Volley.newRequestQueue(this);
@@ -184,6 +183,9 @@ public class MainActivity extends AppActivity implements ICadeCommand {
                 Log.d("DDD Response", map.toString());
                 Log.d("DDD Response 2", groupName);
                 startActivity(alfredGroupIntent);
+                break;
+            case SEARCH_SOCIAL_GROUP:
+                Log.d("Search Group", "works!");
                 break;
             default:
                 break;

@@ -37,7 +37,6 @@ dependencies {
     compile(name: 'PersonalAssistantShared-debug', ext: 'aar')
     compile(name: 'tdmFrontend-1.10.0-release', ext: 'aar')
     compile(name: 'volley-release', ext: 'aar')
-    compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
