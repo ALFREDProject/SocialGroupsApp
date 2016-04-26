@@ -56,8 +56,15 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         loggedUserId = preferences.getString("id", "");
-        if(loggedUserId.isEmpty()){ userId = "56e6c782e1079f764b596c87"; }
-        else { userId = loggedUserId; }
+        if(loggedUserId.isEmpty()){
+            userId = "56e6c782e1079f764b596c87";
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("id", userId);
+            editor.commit();
+        }
+        else {
+            userId = loggedUserId;
+        }
 
         requestQueue = Volley.newRequestQueue(this);
         getMyGroups();

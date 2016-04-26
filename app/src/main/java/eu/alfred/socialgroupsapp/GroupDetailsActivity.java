@@ -33,7 +33,7 @@ public class GroupDetailsActivity extends FragmentActivity {
     private TextView sizeOfGroupTextView, groupDescriptionTextView;
     private Button joinOrLeaveButton;
     private RequestQueue requestQueue;
-    private String reqURL, groupID, userId;
+    private String reqURL, groupID, userId, tempUserId;
     private boolean isAMember, isAnOwner = false;
     final Context context = this;
 
@@ -44,6 +44,7 @@ public class GroupDetailsActivity extends FragmentActivity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userId = preferences.getString("id", "");
+        tempUserId = "\"" + userId + "\"";
 
         requestQueue = Volley.newRequestQueue(this);
         sizeOfGroupTextView = (TextView) findViewById(R.id.sizeOfGroupTextView);
@@ -117,6 +118,7 @@ public class GroupDetailsActivity extends FragmentActivity {
             @Override
             public void onResponse(String response) {
                 getGroupDetails(groupID);
+                joinOrLeaveButton.setText("Leave");
             }
         }, new Response.ErrorListener() {
             @Override
@@ -126,7 +128,7 @@ public class GroupDetailsActivity extends FragmentActivity {
         })
         {
             @Override
-            public byte[] getBody() throws AuthFailureError { return userId.getBytes(); }
+            public byte[] getBody() throws AuthFailureError { return tempUserId.getBytes(); }
         };
 
         requestQueue.add(request);
@@ -149,7 +151,7 @@ public class GroupDetailsActivity extends FragmentActivity {
         })
         {
             @Override
-            public byte[] getBody() throws AuthFailureError { return userId.getBytes(); }
+            public byte[] getBody() throws AuthFailureError { return tempUserId.getBytes(); }
         };
 
         requestQueue.add(request);
@@ -161,8 +163,8 @@ public class GroupDetailsActivity extends FragmentActivity {
     }
 
     public void isAGroupMember(String userId, String[] members) {
-        if (Arrays.asList(members).contains(userId)) isAMember = true;
-        else isAMember = false;
+        if (Arrays.asList(members).contains(userId)) { isAMember = true; }
+        else { isAMember = false; }
     }
 
 
