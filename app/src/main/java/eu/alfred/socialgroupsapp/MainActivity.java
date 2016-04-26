@@ -3,16 +3,16 @@ package eu.alfred.socialgroupsapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.view.MenuItemCompat;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
-import eu.alfred.api.speech.Cade;
 import eu.alfred.socialgroupsapp.adapter.RecyclerAdapter;
 import eu.alfred.socialgroupsapp.model.Group;
 import eu.alfred.ui.AppActivity;

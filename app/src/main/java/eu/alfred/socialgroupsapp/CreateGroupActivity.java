@@ -2,14 +2,10 @@ package eu.alfred.socialgroupsapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,13 +41,13 @@ public class CreateGroupActivity extends FragmentActivity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         userId = preferences.getString("id", "");
         requestQueue = Volley.newRequestQueue(this);
+        Log.d("UserID", userId);
 
         subjectEditText = (EditText) findViewById(R.id.subjectEditText);
         descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
         createGroupButton = (Button) findViewById(R.id.createGroupButton);
 
         Bundle extras = getIntent().getExtras();
-        if(extras == null) { return; }
         if(extras != null) { subjectEditText.setText(extras.getString("GroupName")); descriptionEditText.setText(extras.getString("GroupDescription")); }
 
         createGroupButton.setOnClickListener(new View.OnClickListener() {
@@ -68,9 +64,6 @@ public class CreateGroupActivity extends FragmentActivity {
         Gson gson = new Gson();
         Group newGroup = new Group(description, subject, userID);
         final String json = gson.toJson(newGroup);
-
-        //final String json = "{\"description\": \"" + description + "\" ,\"name\": \"" + subject + "\" ,\"userID\": \""+ userID + "\"}";
-        Log.d("JSON: ", json);
 
         StringRequest request = new StringRequest(Request.Method.POST, reqURL, new Response.Listener<String>() {
             @Override
