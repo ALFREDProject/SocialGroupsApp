@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import eu.alfred.api.globalSettings.GlobalSettings;
 import eu.alfred.internal.wrapper.authentication.AuthenticatedUser;
 import eu.alfred.internal.wrapper.authentication.AuthenticationException;
 import eu.alfred.internal.wrapper.authentication.AuthenticationServerWrapper;
@@ -25,6 +26,7 @@ public class LoginActivity extends FragmentActivity {
 
     private EditText mEmailView, mPasswordView;
     private SharedPreferences preferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
