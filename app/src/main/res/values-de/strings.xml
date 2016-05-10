@@ -10,7 +10,7 @@
     <string name="title_activity_group_detail">GroupDetailActivity</string>
     <string name="action_settings">Settings</string>
     <string name="refresh">Aktualisieren</string>
-    <string name="about_group">Group Description:</string>
+    <string name="about_group">Beschreibung der Gruppe:</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -25,5 +25,7 @@
         completions."
     </string>
     <string name="logout">Abmelden</string>
+    <string name="size_of_group">Gruppenmitglieder:</string>
+    <string name="leave_group">Gruppe verlassen</string>
 
 </resources>

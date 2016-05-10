@@ -25,5 +25,7 @@
         completions."
     </string>
     <string name="logout">Logout</string>
+    <string name="size_of_group">Size of group:</string>
+    <string name="leave_group">Leave this Group</string>
 
 </resources>

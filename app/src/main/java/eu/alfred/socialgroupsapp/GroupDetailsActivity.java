@@ -94,8 +94,8 @@ public class GroupDetailsActivity extends FragmentActivity {
                     Log.d("Created at", response.getString("creationDate"));
                     if (response.getString("name") != null) { setTitle(response.getString("name")); }
                     if (response.getString("description") != null) { groupDescriptionTextView.setText(response.getString("description")); }
-                    sizeOfGroupTextView.setText("Size of group: " + memberIdsJson.length());
-                    if (isAMember || isAnOwner) { joinOrLeaveButton.setText("Leave this Group"); }
+                    sizeOfGroupTextView.setText(getString(R.string.size_of_group) + " " + memberIdsJson.length());
+                    if (isAMember || isAnOwner) { joinOrLeaveButton.setText(getString(R.string.leave_group)); }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
