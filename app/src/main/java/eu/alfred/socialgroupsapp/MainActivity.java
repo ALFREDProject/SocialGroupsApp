@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import eu.alfred.api.personalization.webservice.PersonalizationManager;
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
 import eu.alfred.socialgroupsapp.adapter.RecyclerAdapter;
 import eu.alfred.socialgroupsapp.model.Group;
@@ -69,7 +70,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         getMyGroups();
 
         circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
-        circleButton.setOnTouchListener(new CircleTouchListener());
+        circleButton.setOnTouchListener(new MicrophoneTouchListener());
 
     }
 
@@ -124,6 +125,9 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     }
 
     public void getMyGroups() {
+
+        PersonalizationManager PM = new PersonalizationManager();
+
 
         reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/users/" + userId + "/membergroups";
 
