@@ -10,13 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 
+import eu.alfred.api.personalization.model.Group;
 import eu.alfred.socialgroupsapp.GroupDetailsActivity;
 import eu.alfred.socialgroupsapp.R;
-import eu.alfred.socialgroupsapp.model.Group;
 
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.GroupsViewHolder> {
@@ -64,8 +62,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Groups
 
         public void setData(Group group, int position) {
             this.groupNameTextView.setText(group.getName());
-            if(group.getMemberIds().length < 1) { this.groupMembersCountTextView.setText("No members found!"); }
-            else { this.groupMembersCountTextView.setText("Number of Members: " + group.getMemberIds().length); }
+            if(group.getMemberIds().size() < 1) { this.groupMembersCountTextView.setText("No members found!"); }
+            else { this.groupMembersCountTextView.setText("Number of Members: " + group.getMemberIds().size()); }
             if(group.getDescription() == null) { this.groupDescriptionTextView.setText("No description found for this group"); }
             else { this.groupDescriptionTextView.setText(group.getDescription()); }
             this.group = group;

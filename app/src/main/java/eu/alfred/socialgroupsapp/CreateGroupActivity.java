@@ -1,6 +1,5 @@
 package eu.alfred.socialgroupsapp;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,95 +9,88 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import eu.alfred.socialgroupsapp.model.Group;
+import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.personalization.model.Group;
+import eu.alfred.api.personalization.responses.PersonalizationResponse;
+import eu.alfred.api.personalization.webservice.PersonalizationManager;
 
 public class CreateGroupActivity extends FragmentActivity {
 
-    private Button createGroupButton;
-    private EditText subjectEditText, descriptionEditText;
-    private RequestQueue requestQueue;
-    private String userId;
-    private String reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/groups/new";
+	private EditText subjectEditText, descriptionEditText;
+	private String userId;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_group);
+	private final static String TAG = "SGA:CreateGroupAct";
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        userId = preferences.getString("id", "");
-        requestQueue = Volley.newRequestQueue(this);
-        Log.d("UserID", userId);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_create_group);
 
-        subjectEditText = (EditText) findViewById(R.id.subjectEditText);
-        descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
-        createGroupButton = (Button) findViewById(R.id.createGroupButton);
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		userId = preferences.getString("id", "");
+		Log.d("UserID", userId);
 
-        Bundle extras = getIntent().getExtras();
-        if(extras != null) { subjectEditText.setText(extras.getString("GroupName")); descriptionEditText.setText(extras.getString("GroupDescription")); }
+		subjectEditText = (EditText) findViewById(R.id.subjectEditText);
+		descriptionEditText = (EditText) findViewById(R.id.descriptionEditText);
+		Button createGroupButton = (Button) findViewById(R.id.createGroupButton);
 
-        createGroupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (subjectEditText.getText().toString().isEmpty()) { subjectEditText.setError(getResources().getString(R.string.subject_input_error)); }
-                else { createNewGroup(userId, subjectEditText.getText().toString(), descriptionEditText.getText().toString()); }
-            }
-        });
-    }
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			subjectEditText.setText(extras.getString("GroupName"));
+			descriptionEditText.setText(extras.getString("GroupDescription"));
+		}
 
-    private void createNewGroup(final String userID, final String subject, final String description ) {
+		createGroupButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (subjectEditText.getText().toString().isEmpty()) {
+					subjectEditText.setError(getResources().getString(R.string.subject_input_error));
+				} else {
+					createNewGroup(userId, subjectEditText.getText().toString(), descriptionEditText.getText().toString());
+				}
+			}
+		});
+	}
 
-        Gson gson = new Gson();
-        Group newGroup = new Group(description, subject, userID);
-        final String json = gson.toJson(newGroup);
+	private void createNewGroup(final String userID, final String subject, final String description) {
 
-        StringRequest request = new StringRequest(Request.Method.POST, reqURL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                VolleyLog.v("Response:%n %s", response);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.e("Error: ", error.toString());
-            }
-        })
-            {
+		Group newGroup = new Group();
+		newGroup.setDescription(description);
+		newGroup.setName(subject);
+		newGroup.setUserID(userID);
 
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
+		PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
+		PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-            @Override
-            public byte[] getBody() throws AuthFailureError { return json.getBytes(); }
+		PM.createGroup(newGroup, new PersonalizationResponse() {
+			@Override
+			public void OnSuccess(JSONObject jsonObject) {
+				Log.e(TAG, "createGroup failed");
+			}
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json");
-                params.put("Accept", "*/*");
-                return params;
-            }
+			@Override
+			public void OnSuccess(JSONArray jsonArray) {
+				Log.e(TAG, "createGroup failed");
+			}
 
-        };
+			@Override
+			public void OnSuccess(Object o) {
+				Log.e(TAG, "createGroup failed");
+			}
 
-        requestQueue.add(request);
-    }
+			@Override
+			public void OnSuccess(String s) {
+				Log.i(TAG, "created group with id " + s);
+			}
+
+			@Override
+			public void OnError(Exception e) {
+				Log.e(TAG, "createGroup failed", e);
+			}
+		});
+
+	}
 }
