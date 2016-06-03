@@ -9,13 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import eu.alfred.api.PersonalAssistant;
 import eu.alfred.api.personalization.model.Group;
-import eu.alfred.api.personalization.responses.PersonalizationResponse;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
+import eu.alfred.socialgroupsapp.helper.PersonalizationStringResponse;
 
 public class CreateGroupActivity extends FragmentActivity {
 
@@ -65,30 +62,10 @@ public class CreateGroupActivity extends FragmentActivity {
 		PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
 		PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-		PM.createGroup(newGroup, new PersonalizationResponse() {
-			@Override
-			public void OnSuccess(JSONObject jsonObject) {
-				Log.e(TAG, "createGroup failed");
-			}
-
-			@Override
-			public void OnSuccess(JSONArray jsonArray) {
-				Log.e(TAG, "createGroup failed");
-			}
-
-			@Override
-			public void OnSuccess(Object o) {
-				Log.e(TAG, "createGroup failed");
-			}
-
+		PM.createGroup(newGroup, new PersonalizationStringResponse() {
 			@Override
 			public void OnSuccess(String s) {
 				Log.i(TAG, "created group with id " + s);
-			}
-
-			@Override
-			public void OnError(Exception e) {
-				Log.e(TAG, "createGroup failed", e);
 			}
 		});
 

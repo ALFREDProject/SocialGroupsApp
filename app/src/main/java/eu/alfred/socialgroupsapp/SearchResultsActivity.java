@@ -9,24 +9,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.personalization.client.GroupDto;
+import eu.alfred.api.personalization.client.GroupMapper;
+import eu.alfred.api.personalization.model.Group;
+import eu.alfred.api.personalization.webservice.PersonalizationManager;
+import eu.alfred.socialgroupsapp.helper.PersonalizationArrayResponse;
 
 public class SearchResultsActivity extends FragmentActivity {
 
@@ -34,15 +33,14 @@ public class SearchResultsActivity extends FragmentActivity {
     private Map<String, String> searchResults = new LinkedHashMap<String, String>();
     private List<String> groupNames = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
-    private RequestQueue requestQueue;
-    private String reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/groups/retrieve";
+
+    private final static String TAG = "SGA:SearchResultsAct";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_results);
 
-        requestQueue = Volley.newRequestQueue(this);
         searchResultsListView = (ListView) findViewById(R.id.searchResultsListView);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, groupNames);
 
@@ -65,56 +63,33 @@ public class SearchResultsActivity extends FragmentActivity {
 
     }
 
-    public void getSearchResults(String query){
+    public void getSearchResults(String query) {
 
         final String requestString = "{\"name\": \"" + query + "\"}";
         Log.d("request", requestString);
 
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, reqURL, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                try {
-                    if (response.length() > 0) {
-                        Log.d("onResponse", "works!");
-                        for (int i = 0; i < response.length(); i++) {
-                            JSONObject group = response.getJSONObject(i);
-                            searchResults.put(group.getString("id"), group.getString("name"));
-                            groupNames.add(group.getString("name"));
-                            Log.d("Group", group.toString());
-                        }
-                        searchResultsListView.setAdapter(adapter);
-                    }
-                    //VolleyLog.v("Response:%n %s", response.toString());
-                } catch (JSONException e) { e.printStackTrace(); }
+        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
+        PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-            }
-        }, new Response.ErrorListener() {
+        PM.retrieveFilteredGroups(requestString, new PersonalizationArrayResponse() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.e("Error: ", error.toString());
-            }
-        })
-        {
-            @Override
-            public String getBodyContentType()  {
-                return "application/json; charset=utf-8";
-            }
+            public void OnSuccess(JSONArray jsonArray) {
+                Log.i(TAG, "retrieveFilteredGroups succeeded");
 
-            @Override
-            public byte[] getBody() { return requestString.getBytes(); }
+                Type type = new TypeToken<ArrayList<GroupDto>>() {
+                }.getType();
+                List<GroupDto> dto = new Gson().fromJson(jsonArray.toString(), type);
 
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json");
-                params.put("Accept", "*/*");
-                return params;
+                for (GroupDto cd : dto) {
+                    Group group = GroupMapper.toModel(cd);
+
+                    searchResults.put(group.getId(), group.getName());
+                    groupNames.add(group.getName());
+                    Log.d(TAG, group.toString());
+                }
+
+                searchResultsListView.setAdapter(adapter);
             }
-        };
-
-        requestQueue.add(request);
+        });
     }
-
-
-
 }

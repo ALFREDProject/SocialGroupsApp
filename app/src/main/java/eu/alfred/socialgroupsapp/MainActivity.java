@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -30,10 +29,10 @@ import eu.alfred.api.PersonalAssistant;
 import eu.alfred.api.personalization.client.GroupDto;
 import eu.alfred.api.personalization.client.GroupMapper;
 import eu.alfred.api.personalization.model.Group;
-import eu.alfred.api.personalization.responses.PersonalizationResponse;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
 import eu.alfred.api.proxies.interfaces.ICadeCommand;
 import eu.alfred.socialgroupsapp.adapter.RecyclerAdapter;
+import eu.alfred.socialgroupsapp.helper.PersonalizationArrayResponse;
 import eu.alfred.ui.AppActivity;
 import eu.alfred.ui.CircleButton;
 
@@ -44,8 +43,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private Context context = this;
     private RecyclerView groupsRecyclerview;
     private MenuItem searchItem;
-    private String loggedUserId, userId;
-    private SharedPreferences preferences;
+	private SharedPreferences preferences;
 
     final static String CREATE_SOCIAL_GROUP = "CreateSocialGroupAction";
     final static String SEARCH_SOCIAL_GROUP = "SearchSocialGroupAction";
@@ -58,16 +56,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         setContentView(R.layout.activity_main);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        loggedUserId = preferences.getString("id", "");
-        if(loggedUserId.isEmpty()){
-            userId = "56e6c782e1079f764b596c87";
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString("id", userId);
-            editor.commit();
-        }
-        else {
-            userId = loggedUserId;
-        }
 
         getMyGroups();
 
@@ -134,20 +122,13 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-        PM.retrieveAllGroups(new PersonalizationResponse() {
-            @Override
-            public void OnSuccess(JSONObject jsonObject) {
-	            Log.e(TAG, "retrieveAllGroups failed");
-            }
-
+        PM.retrieveAllGroups(new PersonalizationArrayResponse() {
             @Override
             public void OnSuccess(JSONArray jsonArray) {
 	            Log.i(TAG, "retrieveAllGroups succeeded");
 
 	            Type type = new TypeToken<ArrayList<GroupDto>>() {}.getType();
 	            List<GroupDto> dto = new Gson().fromJson(jsonArray.toString(), type);
-
-	            Log.i(TAG, "number of results = " + dto.size());
 
 	            for (GroupDto cd : dto) {
 		            Group group = GroupMapper.toModel(cd);
@@ -167,21 +148,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 	            groupsRecyclerview.setItemAnimator(new DefaultItemAnimator());
 
             }
-
-            @Override
-            public void OnSuccess(Object o) {
-	            Log.e(TAG, "retrieveAllGroups failed");
-            }
-
-            @Override
-            public void OnSuccess(String s) {
-	            Log.e(TAG, "retrieveAllGroups failed");
-            }
-
-            @Override
-            public void OnError(Exception e) {
-	            Log.e(TAG, "retrieveAllGroups failed", e);
-            }
         });
     }
 
@@ -196,10 +162,10 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         switch (s) {
             case CREATE_SOCIAL_GROUP:
                 Intent alfredGroupIntent = new Intent(this, CreateGroupActivity.class);
-                String groupName = (String) map.get("selected_groupname");
+                String groupName = map.get("selected_groupname");
                 alfredGroupIntent.putExtra("GroupName", groupName);
                 if(map.containsKey("selected_groupdescription")) {
-                    String groupDescription = (String) map.get("selected_groupdescription");
+                    String groupDescription = map.get("selected_groupdescription");
                     alfredGroupIntent.putExtra("GroupDescription", groupDescription);
                 }
                 Log.d(TAG, "DDD Response: " + map.toString());
