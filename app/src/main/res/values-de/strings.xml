@@ -21,11 +21,13 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="logout">Abmelden</string>
     <string name="size_of_group">Gruppenmitglieder:</string>
     <string name="leave_group">Gruppe verlassen</string>
+    <string name="cannot_leave_group">Verlassen nich möglich!</string>
+    <string name="you_are_owner">Sie sind der Eigentümer dieser Gruppe</string>
+    <string name="join">Beitreten</string>
+    <string name="leave">Verlassen</string>
 
 </resources>
