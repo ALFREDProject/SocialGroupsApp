@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.PersonalAssistantConnection;
 import eu.alfred.api.personalization.model.Group;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
 import eu.alfred.socialgroupsapp.helper.PersonalizationStringResponse;
@@ -18,6 +19,7 @@ public class CreateGroupActivity extends FragmentActivity {
 
 	private EditText subjectEditText, descriptionEditText;
 	private String userId;
+	private PersonalAssistant PA;
 
 	private final static String TAG = "SGA:CreateGroupAct";
 
@@ -54,20 +56,34 @@ public class CreateGroupActivity extends FragmentActivity {
 
 	private void createNewGroup(final String userID, final String subject, final String description) {
 
-		Group newGroup = new Group();
-		newGroup.setDescription(description);
-		newGroup.setName(subject);
-		newGroup.setUserID(userID);
+		PA = new PersonalAssistant(this);
 
-		PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
-		PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
-
-		PM.createGroup(newGroup, new PersonalizationStringResponse() {
+		PA.setOnPersonalAssistantConnectionListener(new PersonalAssistantConnection() {
 			@Override
-			public void OnSuccess(String s) {
-				Log.i(TAG, "created group with id " + s);
+			public void OnConnected() {
+				Log.i(TAG, "PersonalAssistantConnection connected");
+
+				Group newGroup = new Group();
+				newGroup.setDescription(description);
+				newGroup.setName(subject);
+				newGroup.setUserID(userID);
+
+				PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
+
+				PM.createGroup(newGroup, new PersonalizationStringResponse() {
+					@Override
+					public void OnSuccess(String s) {
+						Log.i(TAG, "created group with id " + s);
+					}
+				});
+			}
+
+			@Override
+			public void OnDisconnected() {
+				Log.i(TAG, "PersonalAssistantConnection disconnected");
 			}
 		});
 
+		PA.Init();
 	}
 }

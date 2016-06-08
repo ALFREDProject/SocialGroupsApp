@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.PersonalAssistantConnection;
 import eu.alfred.api.personalization.client.GroupDto;
 import eu.alfred.api.personalization.client.GroupMapper;
 import eu.alfred.api.personalization.model.Group;
@@ -33,6 +34,7 @@ public class SearchResultsActivity extends FragmentActivity {
     private Map<String, String> searchResults = new LinkedHashMap<String, String>();
     private List<String> groupNames = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
+    private PersonalAssistant PA;
 
     private final static String TAG = "SGA:SearchResultsAct";
 
@@ -55,12 +57,27 @@ public class SearchResultsActivity extends FragmentActivity {
             }
         });
 
-        String query = getIntent().getStringExtra("Query");
-        if (query != null) {
-            Log.d("Query Intent Received", query);
-            getSearchResults(query);
-        }
+        final String query = getIntent().getStringExtra("Query");
 
+        PA = new PersonalAssistant(this);
+        PA.setOnPersonalAssistantConnectionListener(new PersonalAssistantConnection() {
+            @Override
+            public void OnConnected() {
+                Log.i(TAG, "PersonalAssistantConnection connected");
+
+                if (query != null) {
+                    Log.d("Query Intent Received", query);
+                    getSearchResults(query);
+                }
+            }
+
+            @Override
+            public void OnDisconnected() {
+                Log.i(TAG, "PersonalAssistantConnection disconnected");
+            }
+        });
+
+        PA.Init();
     }
 
     public void getSearchResults(String query) {
@@ -68,7 +85,6 @@ public class SearchResultsActivity extends FragmentActivity {
         final String requestString = "{\"name\": \"" + query + "\"}";
         Log.d("request", requestString);
 
-        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
         PM.retrieveFilteredGroups(requestString, new PersonalizationArrayResponse() {

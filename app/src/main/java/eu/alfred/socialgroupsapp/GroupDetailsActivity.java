@@ -21,6 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Set;
 
 import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.PersonalAssistantConnection;
 import eu.alfred.api.personalization.client.GroupDto;
 import eu.alfred.api.personalization.client.GroupMapper;
 import eu.alfred.api.personalization.model.Group;
@@ -36,6 +37,7 @@ public class GroupDetailsActivity extends FragmentActivity {
 	private String userId;
 	private boolean isAMember, isAnOwner = false;
     final Context context = this;
+    private PersonalAssistant PA;
 
     private final static String TAG = "SGA:GroupDetailsAct";
 
@@ -51,11 +53,30 @@ public class GroupDetailsActivity extends FragmentActivity {
         groupDescriptionTextView = (TextView) findViewById(R.id.groupDescriptionTextView);
         joinOrLeaveButton = (Button) findViewById(R.id.joinOrLeaveButton);
 
+
         groupID = getIntent().getStringExtra("GroupID");
-        if (groupID != null) {
-            Log.d("Group ID", groupID);
-            getGroupDetails(groupID);
-        }
+
+        PA = new PersonalAssistant(this);
+
+        PA.setOnPersonalAssistantConnectionListener(new PersonalAssistantConnection() {
+            @Override
+            public void OnConnected() {
+                Log.i(TAG, "PersonalAssistantConnection connected");
+
+                if (groupID != null) {
+                    Log.d("Group ID", groupID);
+                    getGroupDetails(groupID);
+                }
+            }
+
+            @Override
+            public void OnDisconnected() {
+                Log.i(TAG, "PersonalAssistantConnection disconnected");
+            }
+        });
+
+        PA.Init();
+
 
         joinOrLeaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +102,6 @@ public class GroupDetailsActivity extends FragmentActivity {
 
     public void getGroupDetails(String id) {
 
-        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
         PM.retrieveGroup(id, new PersonalizationObjectResponse() {
@@ -115,7 +135,6 @@ public class GroupDetailsActivity extends FragmentActivity {
 
     public void joinToGroup() {
 
-	    PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
 	    PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
 	    PM.addMemberToGroup(groupID, userId, new PersonalizationStringResponse() {
@@ -130,7 +149,6 @@ public class GroupDetailsActivity extends FragmentActivity {
 
     public void leaveGroup() {
 
-	    PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
 	    PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
 	    PM.removeMemberFromGroup(groupID, userId, new PersonalizationStringResponse() {

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.alfred.api.PersonalAssistant;
+import eu.alfred.api.PersonalAssistantConnection;
 import eu.alfred.api.personalization.client.GroupDto;
 import eu.alfred.api.personalization.client.GroupMapper;
 import eu.alfred.api.personalization.model.Group;
@@ -44,6 +45,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private RecyclerView groupsRecyclerview;
     private MenuItem searchItem;
 	private SharedPreferences preferences;
+    private PersonalAssistant PA;
 
     final static String CREATE_SOCIAL_GROUP = "CreateSocialGroupAction";
     final static String SEARCH_SOCIAL_GROUP = "SearchSocialGroupAction";
@@ -57,13 +59,26 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        getMyGroups();
+
+        PA = new PersonalAssistant(this);
+
+        PA.setOnPersonalAssistantConnectionListener(new PersonalAssistantConnection() {
+            @Override
+            public void OnConnected() {
+                Log.i(TAG, "PersonalAssistantConnection connected");
+                getMyGroups();
+            }
+
+            @Override
+            public void OnDisconnected() {
+                Log.i(TAG, "PersonalAssistantConnection disconnected");
+            }
+        });
+
+        PA.Init();
 
         circleButton = (CircleButton) findViewById(R.id.voiceControlBtn);
         circleButton.setOnTouchListener(new MicrophoneTouchListener());
-
-        // trigger init
-        PersonalAssistantProvider.getPersonalAssistant(this);
 
     }
 
@@ -119,7 +134,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
     public void getMyGroups() {
 
-        PersonalAssistant PA = PersonalAssistantProvider.getPersonalAssistant(this);
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
         PM.retrieveAllGroups(new PersonalizationArrayResponse() {
