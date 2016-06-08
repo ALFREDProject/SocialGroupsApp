@@ -114,6 +114,7 @@ public class GroupDetailsActivity extends FragmentActivity {
                 GroupDto dto = new Gson().fromJson(jsonObject.toString(), type);
 
                 Group group = GroupMapper.toModel(dto);
+                Log.i(TAG, "retrieved " + group);
 
 	            isAGroupMember(userId, group.getMemberIds());
                 isAGroupOwner(userId, group.getUserID());
