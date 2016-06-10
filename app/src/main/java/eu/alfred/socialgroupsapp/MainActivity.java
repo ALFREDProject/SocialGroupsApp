@@ -43,7 +43,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private LinkedHashMap<String, Group> myGroups = new LinkedHashMap<String, Group>();
     private Context context = this;
     private RecyclerView groupsRecyclerview;
-    private MenuItem searchItem;
 	private SharedPreferences preferences;
     private PersonalAssistant PA;
 
@@ -53,9 +52,38 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private final static String TAG = "SGA:MainActivity";
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        searchView.clearFocus();
+        groupsRecyclerview.requestFocus();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        groupsRecyclerview = (RecyclerView) findViewById(R.id.groupsRecyclerView);
+        groupsRecyclerview.requestFocus();
+
+        searchView = (SearchView) findViewById(R.id.searchView);
+        searchView.setBackgroundColor(getResources().getColor(R.color.colorSearchBg));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchView.clearFocus();
+                Intent searchQueryIntent = new Intent(getApplicationContext(), SearchResultsActivity.class);
+                searchQueryIntent.putExtra("Query", query);
+                startActivity(searchQueryIntent);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -85,26 +113,6 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_toolbar, menu);
-        searchItem = menu.findItem(R.id.toolbar_search);
-        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                searchView.clearFocus();
-                searchItem.collapseActionView();
-                Intent searchQueryIntent = new Intent(getApplicationContext(), SearchResultsActivity.class);
-                searchQueryIntent.putExtra("Query", query);
-                Log.d(TAG, "Search: " + query);
-                startActivity(searchQueryIntent);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -6,9 +6,24 @@
     android:orientation="vertical"
     tools:context="eu.alfred.socialgroupsapp.MainActivity">
 
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="2dp"
+        android:layout_alignParentTop="true"
+        android:searchIcon="@drawable/search_48"
+        android:closeIcon="@drawable/close_window_48"
+        android:iconifiedByDefault="false"
+        android:focusable="false"
+        android:focusableInTouchMode="true"
+        android:id="@+id/searchView"
+        android:queryHint="Search..." />
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchView"
         android:id="@+id/groupsRecyclerView" />
 
 

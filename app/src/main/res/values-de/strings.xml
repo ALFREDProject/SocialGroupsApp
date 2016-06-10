@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ALFRED Gruppen</string>
+    <string name="app_name">Gruppen</string>
     <string name="search">Search</string>
     <string name="create_group">Gruppe anlegen</string>
     <string name="subject">Betreff</string>

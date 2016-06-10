@@ -2,20 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/toolbar_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/search"
-        android:showAsAction="collapseActionView|always"
-        android:actionViewClass="android.widget.SearchView" />
+    <item android:id="@+id/toolbar_create"
+        android:icon="@drawable/_add_user_group_48"
+        android:title="@string/create_group"
+        android:showAsAction="always" />
 
     <item android:id="@+id/toolbar_refresh"
-        android:icon="@android:drawable/ic_menu_rotate"
-        app:showAsAction="ifRoom"
+        android:icon="@drawable/refresh_48"
+        android:showAsAction="always"
         android:title="@string/refresh" />
 
-    <item android:id="@+id/toolbar_create" android:title="@string/create_group" />
-
     <item android:id="@+id/toolbar_logout"
-        android:title="@string/logout" />
+        android:title="@string/logout"
+        android:icon="@drawable/exit_48"
+        android:showAsAction="always" />
 
 </menu>
