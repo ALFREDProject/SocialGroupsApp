@@ -44,6 +44,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     private Context context = this;
     private RecyclerView groupsRecyclerview;
 	private SharedPreferences preferences;
+    private String userId;
     private PersonalAssistant PA;
 
     final static String CREATE_SOCIAL_GROUP = "CreateSocialGroupAction";
@@ -62,6 +63,9 @@ public class MainActivity extends AppActivity implements ICadeCommand {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        userId = preferences.getString("id", "");
 
         groupsRecyclerview = (RecyclerView) findViewById(R.id.groupsRecyclerView);
         groupsRecyclerview.requestFocus();
@@ -93,7 +97,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
         PA.setOnPersonalAssistantConnectionListener(new PersonalAssistantConnection() {
             @Override
             public void OnConnected() {
-                Log.i(TAG, "PersonalAssistantConnection connected");
+                //Log.i(TAG, "PersonalAssistantConnection connected");
                 getMyGroups();
             }
 
@@ -144,7 +148,7 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-        PM.retrieveAllGroups(new PersonalizationArrayResponse() {
+        PM.retrieveUsersGroups(userId, new PersonalizationArrayResponse() {
             @Override
             public void OnSuccess(JSONArray jsonArray) {
 	            Log.i(TAG, "retrieveAllGroups succeeded");

@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:paddingBottom="8dp"
+            android:text="@string/size_of_group"
             android:id="@+id/sizeOfGroupTextView" />
 
         <TextView

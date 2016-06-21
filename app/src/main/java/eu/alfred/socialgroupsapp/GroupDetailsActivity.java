@@ -33,8 +33,7 @@ public class GroupDetailsActivity extends FragmentActivity {
 
     private TextView sizeOfGroupTextView, groupDescriptionTextView;
     private Button joinOrLeaveButton;
-	private String groupID;
-	private String userId;
+	private String groupID, userId;
 	private boolean isAMember, isAnOwner = false;
     final Context context = this;
     private PersonalAssistant PA;
@@ -52,7 +51,6 @@ public class GroupDetailsActivity extends FragmentActivity {
         sizeOfGroupTextView = (TextView) findViewById(R.id.sizeOfGroupTextView);
         groupDescriptionTextView = (TextView) findViewById(R.id.groupDescriptionTextView);
         joinOrLeaveButton = (Button) findViewById(R.id.joinOrLeaveButton);
-
 
         groupID = getIntent().getStringExtra("GroupID");
 
@@ -109,6 +107,7 @@ public class GroupDetailsActivity extends FragmentActivity {
             public void OnSuccess(JSONObject jsonObject) {
 
                 Log.i(TAG, "retrieveGroup succeeded");
+                Log.i("groupjson", jsonObject.toString());
 
                 Type type = new TypeToken<GroupDto>() {}.getType();
                 GroupDto dto = new Gson().fromJson(jsonObject.toString(), type);
