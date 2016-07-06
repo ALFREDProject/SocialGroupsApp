@@ -12,23 +12,28 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Set;
 
 import eu.alfred.api.PersonalAssistant;
 import eu.alfred.api.PersonalAssistantConnection;
-import eu.alfred.api.personalization.client.GroupDto;
-import eu.alfred.api.personalization.client.GroupMapper;
-import eu.alfred.api.personalization.model.Group;
 import eu.alfred.api.personalization.webservice.PersonalizationManager;
-import eu.alfred.socialgroupsapp.helper.PersonalizationObjectResponse;
 import eu.alfred.socialgroupsapp.helper.PersonalizationStringResponse;
 
+//----------- due to work around within getGroupDetails
+
+//__________
 public class GroupDetailsActivity extends FragmentActivity {
 
     private TextView sizeOfGroupTextView, groupDescriptionTextView;
@@ -79,27 +84,45 @@ public class GroupDetailsActivity extends FragmentActivity {
         joinOrLeaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isAMember) { joinToGroup(); }
-                if (isAMember && !isAnOwner) { leaveGroup(); }
+                if (!isAMember) {
+                    joinToGroup();
+                }
+                if (isAMember && !isAnOwner) {
+                    leaveGroup();
+                }
                 if (isAnOwner) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle(R.string.cannot_leave_group);
                     builder.setMessage(R.string.you_are_owner);
+                    /*
                     builder.setNeutralButton("Okay", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.cancel();
                         }
                     });
+                    */
+                    builder.setPositiveButton("Delete Group", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteGroup();
+                        }
+                    });
+
+                    builder.setNegativeButton("Leave Group", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            leaveGroup();
+                        }
+                    });
                     builder.create().show();
                 }
             }
         });
-
     }
 
     public void getGroupDetails(String id) {
-
+/*
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
         PM.retrieveGroup(id, new PersonalizationObjectResponse() {
@@ -129,37 +152,87 @@ public class GroupDetailsActivity extends FragmentActivity {
                 if (isAMember || isAnOwner) {
                     joinOrLeaveButton.setText(getString(R.string.leave_group));
                 }
+            };
+        });
+    */
+        String reqURL;
+        RequestQueue requestQueue;
+        requestQueue = Volley.newRequestQueue(this);
+
+        reqURL = "http://alfred.eu:8080/personalization-manager/services/databaseServices/groups/" + id;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, reqURL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray memberIdsJson = response.getJSONArray("memberIds");
+                    String[] memberIds = new String[memberIdsJson.length()];
+                    for (int i = 0; i < memberIdsJson.length(); i++) {
+                        memberIds[i] = memberIdsJson.getString(i);
+                    }
+                    isAGroupMember(userId, memberIds);
+                    isAGroupOwner(userId, response.getString("userID"));
+                    Log.d("Created at", response.getString("creationDate"));
+                    if (response.getString("name") != null) { setTitle(response.getString("name")); }
+                    if (response.getString("description") != null) { groupDescriptionTextView.setText(response.getString("description")); }
+                    sizeOfGroupTextView.setText("Size of group: " + memberIdsJson.length());
+                    if (isAMember) { joinOrLeaveButton.setText("Leave this Group"); }
+                    if (isAnOwner) { joinOrLeaveButton.setText("Delete or Leave this Group"); }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VOLLEY", error.getMessage());
             }
         });
+
+        requestQueue.add(request);
+
     }
 
     public void joinToGroup() {
 
 	    PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-	    PM.addMemberToGroup(groupID, userId, new PersonalizationStringResponse() {
-		    @Override
-		    public void OnSuccess(String s) {
-			    Log.i(TAG, "addMemberToGroup succeeded: " + s);
-			    getGroupDetails(groupID);
-			    joinOrLeaveButton.setText(R.string.leave);
-		    }
-	    });
+        PM.addMemberToGroup(groupID, userId, new PersonalizationStringResponse() {
+            @Override
+            public void OnSuccess(String s) {
+                Log.i(TAG, "addMemberToGroup succeeded: " + s);
+                getGroupDetails(groupID);
+                joinOrLeaveButton.setText(R.string.leave);
+            }
+        });
     }
 
     public void leaveGroup() {
 
 	    PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-	    PM.removeMemberFromGroup(groupID, userId, new PersonalizationStringResponse() {
-		    @Override
-		    public void OnSuccess(String s) {
-			    Log.i(TAG, "removeMemberToGroup succeeded: " + s);
-			    getGroupDetails(groupID);
-			    joinOrLeaveButton.setText(R.string.join);
-		    }
-	    });
+        PM.removeMemberFromGroup(groupID, userId, new PersonalizationStringResponse() {
+            @Override
+            public void OnSuccess(String s) {
+                Log.i(TAG, "removeMemberToGroup succeeded: " + s);
+                getGroupDetails(groupID);
+                joinOrLeaveButton.setText(R.string.join);
+            }
+        });
     }
+
+    public void deleteGroup() {
+
+        PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
+
+        PM.deleteGroup(groupID, new PersonalizationStringResponse() {
+            @Override
+            public void OnSuccess(String s) {
+                Log.i(TAG, "delete of group succeeded: " + s);
+
+            }
+        });
+        finish();
+     }
 
     public void isAGroupOwner(String userId, String ownerId) {
         isAnOwner = userId.contentEquals(ownerId);
@@ -168,4 +241,11 @@ public class GroupDetailsActivity extends FragmentActivity {
     public void isAGroupMember(String userId, Set<String> members) {
 	    isAMember = members.contains(userId);
     }
+
+    public void isAGroupMember(String userId, String[] members) {
+        if (Arrays.asList(members).contains(userId)) { isAMember = true; }
+        else { isAMember = false; }
+    }
+
 }
+
