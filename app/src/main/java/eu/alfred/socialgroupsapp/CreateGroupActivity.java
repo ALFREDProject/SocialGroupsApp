@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import eu.alfred.api.PersonalAssistant;
 import eu.alfred.api.PersonalAssistantConnection;
 import eu.alfred.api.personalization.model.Group;
@@ -63,10 +66,14 @@ public class CreateGroupActivity extends FragmentActivity {
 			public void OnConnected() {
 				Log.i(TAG, "PersonalAssistantConnection connected");
 
+				Set<String> member = new HashSet<String>();
+				member.add(userID);
+
 				Group newGroup = new Group();
 				newGroup.setDescription(description);
 				newGroup.setName(subject);
 				newGroup.setUserID(userID);
+				newGroup.setMemberIds(member);
 
 				PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
@@ -82,8 +89,10 @@ public class CreateGroupActivity extends FragmentActivity {
 			public void OnDisconnected() {
 				Log.i(TAG, "PersonalAssistantConnection disconnected");
 			}
+
 		});
 
 		PA.Init();
+		finish();
 	}
 }
