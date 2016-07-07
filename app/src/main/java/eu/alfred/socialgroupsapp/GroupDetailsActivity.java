@@ -3,6 +3,7 @@ package eu.alfred.socialgroupsapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -90,7 +91,7 @@ public class GroupDetailsActivity extends FragmentActivity {
                 if (isAMember && !isAnOwner) {
                     leaveGroup();
                 }
-                if (isAnOwner) {
+                if (isAnOwner && isAMember) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle(R.string.cannot_leave_group);
                     builder.setMessage(R.string.you_are_owner);
@@ -177,6 +178,7 @@ public class GroupDetailsActivity extends FragmentActivity {
                     sizeOfGroupTextView.setText("Size of group: " + memberIdsJson.length());
                     if (isAMember) { joinOrLeaveButton.setText("Leave this Group"); }
                     if (isAnOwner) { joinOrLeaveButton.setText("Delete or Leave this Group"); }
+                    if (!isAMember) { joinOrLeaveButton.setText("Join this Group"); }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -192,6 +194,12 @@ public class GroupDetailsActivity extends FragmentActivity {
 
     }
 
+    public void goBackToMainActivity() {
+        Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+        mainIntent.putExtra("Groups", "");
+        startActivity(mainIntent);
+    }
+
     public void joinToGroup() {
 
 	    PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
@@ -200,8 +208,10 @@ public class GroupDetailsActivity extends FragmentActivity {
             @Override
             public void OnSuccess(String s) {
                 Log.i(TAG, "addMemberToGroup succeeded: " + s);
-                getGroupDetails(groupID);
+/*                getGroupDetails(groupID);
                 joinOrLeaveButton.setText(R.string.leave);
+*/
+                goBackToMainActivity();
             }
         });
     }
@@ -214,8 +224,10 @@ public class GroupDetailsActivity extends FragmentActivity {
             @Override
             public void OnSuccess(String s) {
                 Log.i(TAG, "removeMemberToGroup succeeded: " + s);
-                getGroupDetails(groupID);
+/*                getGroupDetails(groupID);
                 joinOrLeaveButton.setText(R.string.join);
+*/
+                goBackToMainActivity();
             }
         });
     }
@@ -228,10 +240,11 @@ public class GroupDetailsActivity extends FragmentActivity {
             @Override
             public void OnSuccess(String s) {
                 Log.i(TAG, "delete of group succeeded: " + s);
+                goBackToMainActivity();
 
             }
         });
-        finish();
+//        finish();
      }
 
     public void isAGroupOwner(String userId, String ownerId) {
@@ -248,4 +261,3 @@ public class GroupDetailsActivity extends FragmentActivity {
     }
 
 }
-
