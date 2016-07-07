@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -148,7 +147,8 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
 
-        PM.retrieveUsersGroups(userId, new PersonalizationArrayResponse() {
+//        PM.retrieveUsersGroups(userId, new PersonalizationArrayResponse() {
+        PM.retrieveGroupsWithMember(userId, new PersonalizationArrayResponse() {
             @Override
             public void OnSuccess(JSONArray jsonArray) {
 	            Log.i(TAG, "retrieveAllGroups succeeded");
@@ -224,4 +224,5 @@ public class MainActivity extends AppActivity implements ICadeCommand {
 	    Log.e(TAG, "performEntityRecognizer(" + s + ", " + map + ")");
     }
 }
+
 
