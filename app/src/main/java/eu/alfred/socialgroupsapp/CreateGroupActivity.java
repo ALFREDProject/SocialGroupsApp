@@ -1,5 +1,6 @@
 package eu.alfred.socialgroupsapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -57,6 +58,12 @@ public class CreateGroupActivity extends FragmentActivity {
 		});
 	}
 
+	public void goBackToMainActivity() {
+		Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+		mainIntent.putExtra("Groups", "");
+		startActivity(mainIntent);
+	}
+
 	private void createNewGroup(final String userID, final String subject, final String description) {
 
 		PA = new PersonalAssistant(this);
@@ -93,6 +100,7 @@ public class CreateGroupActivity extends FragmentActivity {
 		});
 
 		PA.Init();
-		finish();
+//		finish();
+		goBackToMainActivity();
 	}
 }
