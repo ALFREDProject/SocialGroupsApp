@@ -64,11 +64,13 @@ public class SearchResultsActivity extends FragmentActivity {
             @Override
             public void OnConnected() {
                 Log.i(TAG, "PersonalAssistantConnection connected");
-
+                getSearchResults(query);
+/*
                 if (query != null) {
                     Log.d("Query Intent Received", query);
                     getSearchResults(query);
                 }
+*/
             }
 
             @Override
@@ -86,12 +88,11 @@ public class SearchResultsActivity extends FragmentActivity {
         Log.d("request", requestString);
 
         PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
-
         PM.retrieveFilteredGroups(requestString, new PersonalizationArrayResponse() {
             @Override
             public void OnSuccess(JSONArray jsonArray) {
                 Log.i(TAG, "retrieveFilteredGroups succeeded");
-
+/*
                 Type type = new TypeToken<ArrayList<GroupDto>>() {
                 }.getType();
                 List<GroupDto> dto = new Gson().fromJson(jsonArray.toString(), type);
@@ -105,7 +106,43 @@ public class SearchResultsActivity extends FragmentActivity {
                 }
 
                 searchResultsListView.setAdapter(adapter);
+                */
+                collectSearchResults(jsonArray);
+            }
+            @Override
+            public void OnError(Exception e) {
+                Log.e(TAG, e.getClass().getSimpleName() + ": " + e.getMessage());
+                getAllSearchResults();
+            }
+
+        });
+    }
+
+    private void getAllSearchResults() {
+        PersonalizationManager PM = new PersonalizationManager(PA.getMessenger());
+        PM.retrieveAllGroups(new PersonalizationArrayResponse() {
+            @Override
+            public void OnSuccess(JSONArray jsonArray) {
+                Log.i(TAG, "retrieveAllGroups succeeded");
+                collectSearchResults(jsonArray);
             }
         });
+    }
+
+    private void collectSearchResults(JSONArray jsonArray) {
+        Type type = new TypeToken<ArrayList<GroupDto>>() {
+        }.getType();
+        List<GroupDto> dto = new Gson().fromJson(jsonArray.toString(), type);
+
+        for (GroupDto cd : dto) {
+            Group group = GroupMapper.toModel(cd);
+
+            searchResults.put(group.getId(), group.getName());
+            groupNames.add(group.getName() + ", " + group.getDescription());
+            Log.d(TAG, group.toString());
+        }
+
+        searchResultsListView.setAdapter(adapter);
+
     }
 }
